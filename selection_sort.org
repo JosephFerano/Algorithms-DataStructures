@@ -1,0 +1,51 @@
+#+OPTIONS: ^:{}
+
+** Selection Sort
+
+Runtime O(n^{2})
+
+*** Python
+
+#+begin_src python
+def selection_sort(arr):
+    sorted_list = []
+    for i in range(len(arr)):
+        max = arr[0]
+        for count, value in enumerate(arr):
+            if value > max:
+                max = value
+        sorted_list.append(max)
+        arr.remove(max)
+    return sorted_list
+
+selection_sort([2,1,5,3,4])
+#+end_src
+
+*** OCaml
+
+Really reinventing the wheel on this one...
+
+#+begin_src ocaml
+let max_element = function
+  | [] -> invalid_arg "empty list"
+  | x::xs ->
+     let rec f acc = function
+       | [] -> acc
+       | x::xs -> f (if x > acc then x else acc) xs
+     in f x xs
+
+let remove item list = 
+  let rec f acc item = function
+    | [] -> List.rev acc
+    | x::xs -> if item = x then (List.rev acc) @ xs else f (x::acc) item xs
+  in f [] item list
+
+let selection_sort list =
+  let rec f acc = function
+    | [] -> acc
+    | xs ->
+       let m = max xs
+       in f (m::acc) (remove m xs)
+  in f [] list
+#+end_src
+

@@ -1,0 +1,5 @@
+#+TITLE: Notes & Exercises: Grokking Algorithms
+#+AUTHOR: Joseph Ferano
+
+** Notes
+** Exercises

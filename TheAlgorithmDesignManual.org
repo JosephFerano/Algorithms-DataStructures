@@ -1,0 +1,5 @@
+#+TITLE: Notes & Exercises: The Algorith Design Manual
+#+AUTHOR: Joseph Ferano
+
+** Notes
+** Exercises

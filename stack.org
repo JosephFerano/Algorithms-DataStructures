@@ -1,0 +1,66 @@
+** C
+
+#+begin_src C :includes stdlib.h stdio.h stdbool.h
+typedef struct Node {
+    struct Node* next;
+    /* void *data; */
+    int data;
+} Node;
+
+typedef struct Stack {
+    Node* top;
+    int length;
+} Stack;
+
+/* void stack_create(void* data) { */
+Stack *stack_create(int data) {
+    Stack *stack = malloc(sizeof(Stack));
+    Node *node = malloc(sizeof(Node));
+    node->data = data;
+    node->next = NULL;
+    stack->top = node;
+    stack->length = 1;
+    return stack;
+}
+
+int stack_pop(Stack *stack) {
+    Node *top = stack->top;
+    Node *next = top->next;
+    if (stack->length > 0 && next != NULL) {
+        stack->top = next;
+        stack->length--;
+        int value = top->data;
+        free(top);
+        return value;
+    } else {
+        // A better API design would be to return a bool and the int as a pointer
+        // Although once we switch away from int and use void pointers, might not be needed
+        return -1;
+    }
+}
+
+/* void stack_push(Stack *stack, void *data) { */
+void stack_push(Stack *stack, int data) {
+    Node *node = malloc(sizeof(Node));
+    Node *top = stack->top;
+    node->data = data;
+    node->next = top;
+    stack->top = node;
+    stack->length++;
+}
+
+/* void* stack_peak(Stack *stack) { */
+int stack_peak(Stack *stack) {
+    return stack->top->data;
+}
+
+void stack_print(Stack *stack) {
+    Node *current = stack->top;
+    int i = 0;
+    while (current != NULL) {
+        printf("Stack at %d: %d\n", ++i, current->data);
+        current = current->next;
+    }
+    printf("------------------\n");
+}
+#+end_src
