@@ -1,5 +1,46 @@
 #+TITLE: Notes & Exercises: Grokking Algorithms
 #+AUTHOR: Joseph Ferano
 
-** Notes
-** Exercises
+* Random
+
+** Recursive sum
+
+*** OCaml
+#+begin_src ocaml
+let rec sum_rec = function
+  | [] -> 0
+  | n::ns -> n + sum_rec ns;;
+
+sum_rec [2;3;4;2;1];;
+#+end_src
+
+#+RESULTS:
+: 12
+
+#+begin_src ocaml
+let sum_rec_tail list =
+  let rec f acc = function
+  | [] -> 0
+  | n::ns -> sum_rec (acc + n) ns
+  in f 0 list;;
+
+sum_rec [2;3;4;2;1];;
+#+end_src
+
+#+RESULTS:
+: 12
+
+*** Python
+
+#+begin_src python :results output
+def sum_rec(arr):
+    if not arr:
+        return 0
+    else:
+        return arr[0] + sum_rec(arr[1:])
+
+print(sum_rec([1,2,3]))
+#+end_src
+
+#+RESULTS:
+: 6

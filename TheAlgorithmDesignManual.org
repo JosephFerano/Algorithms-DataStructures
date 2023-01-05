@@ -1,5 +1,101 @@
 #+TITLE: Notes & Exercises: The Algorith Design Manual
 #+AUTHOR: Joseph Ferano
+#+OPTIONS: ^:{}
+
+* Chapter 1
 
 ** Notes
-** Exercises
+*** 1
+An /algorithm/ is a procedure that takes any of the possible input instances
+and transforms it to the desired output. 
+
+The author provides an example of a sorting algorithm called
+~insertion_sort~. Here it is modified so it actually runs
+
+#+begin_src C :includes stdio.h
+void insertion_sort(int *nums, int len) {
+    int i, j;
+    for (i = 1; i < len; i++) {
+        j = i;
+        while (nums[j] < nums[j -1] && j > 0) {
+            int temp = nums[j];
+            nums[j] = nums[j - 1];
+            nums[j - 1] = temp;
+            j--;
+        }
+    }
+}
+
+int nums[8] = {1,4,5,2,8,3,7,9};
+insertion_sort(nums, 8);
+for (int i = 0; i < 8; i++) {
+    printf("%d", nums[i]);
+}
+#+end_src
+
+#+RESULTS:
+: 12345789
+
+*** 1.1 Robots
+The Robot arm problem is presented where it is trying to solder contact points
+and visit all points in the shortest path possible.
+
+The first algorithm considered is ~NearestNeighbor~. However this is a naïve, and
+the arm hopscotches around
+
+Next we consider ~ClosestPair~, but that too misses in certain instances.
+
+Next is ~OptimalTSP~, which will always give the correct result because it
+enumerates all possible combinations and return the one with the shortest
+path. For 20 points however, the algorithm grows at a right of O(n!). TSP stands
+for Traveling Salesman Problem.
+
+**** TODO Implement NearestNeighbor
+**** TODO Implement ClosestPair
+**** TODO Implement OptimalTSP for N < 8
+
+*** 1.2 Right Jobs
+Here we are introduced to the Movie Scheduling Problem where we try to pick the
+largest amount of mutually non-overlapping movies an actor can pick to maximize
+their time. Algorithms considered are ~EarliestJobFirst~ to start as soon as
+possible, and then ~ShortestJobFirst~ to be done with it the quickest, but both
+fail to find optimal solutions.
+
+~ExhaustiveScheduling~ grows at a rate of O(2^{n}) which is much better than O(n!) as
+in the previous problem. Finally ~OptimalScheduling~ improves efficiency by first
+removing candidates that are overlapping such that it doesn't even compare them.
+
+*** 1.3 Correctness
+
+It's important to be clear about the steps in pseudocode when designing
+algorithms on paper. There are important things to consider about algorithm
+correctness;
+
+- Verifiability
+- Simplicity
+- Think small
+- Think exhaustively
+- Hunt for the weakness
+- Go for a tie
+- Seek extremes
+
+Other tecniques include *Induction*, *Recursion*, and *Summations*.
+
+*** 1.4 Modeling
+
+Most algorithms are designed to work on rigorously defined abstract
+structures. These fundamental structures include;
+
+- Permutations
+- Subsets
+- Trees
+- Graphs
+- Points
+- Polygons
+- Strings
+
+*** 1.5-1.6 War Story about Psychics
+
+
+* Chapter 2
+
