@@ -44,3 +44,28 @@ print(sum_rec([1,2,3]))
 
 #+RESULTS:
 : 6
+
+** Quicksort
+
+*** Python
+#+begin_src python
+import random
+
+def quicksort(arr):
+    if len(arr) < 2:
+        return arr
+    elif len(arr) == 2:
+        if arr[0] > arr[1]:
+            temp = arr[1]
+            arr[1] = arr[0]
+            arr[0] = temp
+        return arr
+    else:
+        # Pick a random pivot
+        index = random.randrange(0, len(arr))
+        pivot = arr.pop(index)
+        left = [x for x in arr if x <= pivot]
+        right = [x for x in arr if x > pivot]
+        return quicksort(left) + [pivot] + quicksort(right)
+#+end_src
+
