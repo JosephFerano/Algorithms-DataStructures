@@ -1,7 +1,8 @@
 #+TITLE: Notes & Exercises: Grokking Algorithms
 #+AUTHOR: Joseph Ferano
+#+OPTIONS: ^:{}
 
-* Random
+* Algorithms from the book
 
 ** Recursive sum
 
@@ -44,6 +45,72 @@ print(sum_rec([1,2,3]))
 
 #+RESULTS:
 : 6
+
+** Binary Search
+*** OCaml
+
+#+begin_src ocaml
+let binary_search items target =
+  let rec f low high =
+    match (high - low) / 2 + low with
+    | mid when target = items.(mid) -> Some items.(mid)
+    | mid when target < items.(mid) -> f low mid
+    | mid when target > items.(mid) -> f mid high
+    | _ -> None
+  in f 0 (Array.length items);;
+
+binary_search [|1;2;3;4;5|] 3;;
+#+end_src
+
+
+** Selection Sort
+
+Runtime O(n^{2})
+
+*** Python
+
+#+begin_src python
+def selection_sort(arr):
+    sorted_list = []
+    for i in range(len(arr)):
+        max = arr[0]
+        for count, value in enumerate(arr):
+            if value > max:
+                max = value
+        sorted_list.append(max)
+        arr.remove(max)
+    return sorted_list
+
+selection_sort([2,1,5,3,4])
+#+end_src
+
+*** OCaml
+
+Really reinventing the wheel on this one...
+
+#+begin_src ocaml
+let max_element = function
+  | [] -> invalid_arg "empty list"
+  | x::xs ->
+     let rec f acc = function
+       | [] -> acc
+       | x::xs -> f (if x > acc then x else acc) xs
+     in f x xs
+
+let remove item list = 
+  let rec f acc item = function
+    | [] -> List.rev acc
+    | x::xs -> if item = x then (List.rev acc) @ xs else f (x::acc) item xs
+  in f [] item list
+
+let selection_sort list =
+  let rec f acc = function
+    | [] -> acc
+    | xs ->
+       let m = max xs
+       in f (m::acc) (remove m xs)
+  in f [] list
+#+end_src
 
 ** Quicksort
 
