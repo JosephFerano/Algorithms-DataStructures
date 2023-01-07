@@ -1,4 +1,9 @@
-** C
+#+TITLE: Random Data Structures
+#+AUTHOR: Joseph Ferano
+#+OPTIONS: ^:{}
+
+** Stack
+*** C
 
 #+begin_src C :includes stdlib.h stdio.h stdbool.h
 typedef struct Node {
