@@ -4,11 +4,11 @@
 
 * Chapter 1
 
-** 1
+** 1.1 Robots
+
 An /algorithm/ is a procedure that takes any of the possible input instances
 and transforms it to the desired output. 
 
-** 1.1 Robots
 The Robot arm problem is presented where it is trying to solder contact points
 and visit all points in the shortest path possible.
 
@@ -229,3 +229,131 @@ There are also limits and dominance relations
 
 * Chapter 3
 
+** 3.1 Contiguous vs Linked Data Structures
+
+Advantages of Arrays
+- Constant-time access given the index
+- Space efficiency
+- Memory locality
+
+Downsides is that they don't grow but dynamic arrays fix this by allocating a
+new bigger array when needed.
+
+Advantages of Linked Structures
+- No overflow, can keep growing
+- Insertions/Deletions are simpler
+- A collection of pointers are lighter than contiguous data
+
+However, pointers require extra space for storing pointer fields
+
+** 3.2 Stacks and Queues
+
+*** Stacks
+/(PUSH, /POP/) LIFO, useful in executing recursive algorithms.
+
+*** Queues
+(/ENQUEUE/, /DEQUEUE/) FIFO, useful for breadth-first searches in graphs.
+
+** 3.3 Dictionaries
+
+Not just hashtables but anything that can provide access to data by
+content. Some dictionaries implement trees instead of hashing. Both contiguous
+and linked structures can be used with tradeoffs between them.
+
+** 3.4 Binary Search Trees
+
+BSTs have a parent and two child nodes; left and right. They support insertion,
+deletion, traversal. Interestingly, Min and Max can be calculated by seeking the
+leftmost and rightmost node respectively, provided the tree is balanced. BSTs
+can have good performance for most cases so long as they remain balanced. O(h)
+refers to the time being the height of the BST.
+
+** 3.5 Priority Queues
+
+They allow new elements to enter a system at arbitrary intervals.
+
+** 3.6 War Story
+
+Rather than storing all of the vertices of a mesh, you can share them between
+the different triangles, but connecting all vertices requires visiting each
+vertice once, a Hamiltonian path, but that's NP-Complete. Using a greedy
+heuristic where it tries to always grab the best possible thing first. Then
+using a priority queue, they were able to reduce the running time by several
+orders of magnitude compared to the naïve approach.
+
+** 3.7 Hasing and Strings
+
+Take a map to a big int, use modulo to spin around, and if /m/ is a large prime
+you'll get fairly uniform distribution. The two main ways to solve collisions
+are /Chaining/ and /Open Addressing/. Chaining is where each bucket has a linked
+list and collisions are appended. Open addressing looks for adjacent empty
+buckets.
+
+Hashing is also useful when dealing strings, in particular, substring pattern
+matching. Overlaying pattern /p/ over every position in text /t/ would result in
+O(m*n). With hashing, you can hash the slices of /t/ and compare them to /p/, and
+get slower growth. This is called the *Rabin-Karp algorithm*. While
+false-positives may occur, a good hashing function would avoid this.
+
+Hashing is so important Yahoo! employs them extensively.
+
+** 3.8 Specialized Data Structures
+
+These include;
+
+- String
+  Characters in an array
+- Geometric
+  Collection of points and regions/polygons
+- Graph
+  Using adjacency matrices
+- Set
+  Dicionaries and bit vectors
+
+
+** 3.9 War Story
+
+They were trying to implement sequencing by hybridization (SBH), but ran into
+issues when they used a BST. Then they tried a hashtable, then a trie. Finally
+what worked was a compressed suffix tree.
+
+
+** Exercises
+
+*** 3.42
+
+Reverse the words in a sentence—that is, “My name is Chris” becomes “Chris is
+name My.” Optimize for time and space.
+
+#+begin_src C :includes stdlib.h stdio.h string.h
+void reverse_word(char *string, int length) {
+    for (int i = 0; i < length / 2; i++) {
+        char temp = string[i];
+        string[i] = string[length - 1 - i];
+        string[length - 1 - i] = temp;
+    }
+}
+
+void reverse_words(char *string, int length) {
+    printf("Before: %s\n", string);
+    reverse_word(string, length);
+    printf("After: %s\n", string);
+    int start = 0;
+    for (int i = 0; i < length; i++) {
+        if (string[i] == ' ' || i == length - 1) {
+            if (i == length - 1) i++;
+            reverse_word(&string[start], i - start);
+            start = i + 1;
+        }
+    }
+}
+
+char str[] = "My name is Chris";
+reverse_words(str, strlen(str));
+printf("Final: %s\n", str);
+#+end_src
+
+#+RESULTS:
+| Before: | My    | name | is   | Chris |
+| After:  | sirhC | si   | eman | yM    |
+| Final:  | Chris | is   | name | My    |
