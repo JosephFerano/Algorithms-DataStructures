@@ -570,6 +570,13 @@ Apparently calculating airline tickets is hard
 
 ** 4.5 Mergesort
 
+Uses Divide-and-Conquer, recursively partitioning elements into two groups. It
+takes O(n log n), however the space complexity is linear, because in the
+following code, we have to allocate memory to construct a new sorted array.
+Doing so in place doesn't work because you're effectively destroying the
+previous sorting. However, when working with linked lists, no extra allocations
+are required since you can just rearrange what the pointers point to.
+
 #+begin_src C :includes stdio.h stdlib.h
 int *merge_sort(int *array, int start, int len) {
     int *sorted = malloc(sizeof(int) * len);
@@ -617,10 +624,65 @@ for (int i = 0; i < AL; i++) {
 
 ** 4.6 Quicksort
 
+Quicksort depends on a randomly selected pivot in order to get O(n log n) in the
+average case. This is because if you select the same index for the pivot each
+time, there will always exist an arrangement of elements in an array that will
+be the worst case and result in O(n^{2}).
+
+The moral of the story is that randomization is helpful for improving
+algorithms involved in sampling, hashing, and searching. The  nuts and bolts
+problem is a good example; if you have /n/ different sized bolts and /n/
+matching nuts, how long would it take to match them all. Well if you pick a bolt
+randomly and make two piles based on whether they are smaller or larger, then
+you effectively ran a quicksort and were able to get it done in O(n log n) time,
+rather than having to test each bolt with each nut.
+
+One important note about Quicksort and why it's preferred over Mergesort is
+because apparently in real world benchmarks, it outperforms it 2-3x. This is
+likely due to the extra space requirements of mergesort. In particular if you
+have to allocate memory on the heap
+
+#+begin_src C :includes stdio.h stdlib.h
+void quicksort(int *array, int len) {
+    int pivot = pivot();
+    int *left = quicksort(array, len / 2);
+    int *right =quicksort(array, len / 2);
+}
+#+end_src
+
+
 ** 4.7 Distribution Sort: Bucketing
+
+Two other sorting algorithms function similarly by subdividing the sorting
+groups; bucketsort and distribution sort. The example given is that of a
+phonebook. However, these are more heuristic and don't guarantee good
+performance if the distribution of the data is not fairly uniform.
 
 ** 4.8 War Story
 
+Apparently serving as an expert witness is quite interesting. That and hardware
+is the platform.
+
 ** 4.9 Binary Search and Related Algorithms
 
+If anyone ever asks you to play 20 questions where you have to guess a word,
+just use binary search and before 20 tries you will have narroed down the
+correct word. Counting occurences can have pretty good time if you want to have
+constant space growth; just sort the array then count the repeat ocurrences in a
+contiguous sequence. There's also a one-sided binary search in case you're
+dealing with lazy sequences, where you search first by A[1], then A[2], A[4],
+A[8], A[16], and so forth. You can also use these sorts of bisections on square
+root problems, whatever those are.
+
 ** 4.10 Divide-and-Conquer
+
+Algorithms that use this technique, Mergesort being the classic example, have
+other important applications such as Fourier transforms and Strassen's matrix
+multiplication algorithm. What's important is understanding recurrence
+relations.
+
+*** Recurrence Relations
+
+It is an equation that is defined in terms of itself, so I guess recursive.
+Fibonacci is a good example F_{n} = F_{n-1} + F_{n-2}...
+
