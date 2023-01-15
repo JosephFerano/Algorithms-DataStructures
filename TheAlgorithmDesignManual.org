@@ -570,6 +570,51 @@ Apparently calculating airline tickets is hard
 
 ** 4.5 Mergesort
 
+#+begin_src C :includes stdio.h stdlib.h
+int *merge_sort(int *array, int start, int len) {
+    int *sorted = malloc(sizeof(int) * len);
+    if (len <= 1) {
+        sorted[0] = array[start];
+        return sorted;
+    }
+    int half = (len + 1) / 2;
+    int *sorted_l = merge_sort(array, start, half);
+    int *sorted_r = merge_sort(array, start + half, len / 2);
+    int size_r = len / 2;
+    int size_l = half;
+    int i = 0, ir = 0, il = 0;
+    for (; i < len; i++) {
+        if ((il >= size_l && ir < size_r) || (ir < size_r && sorted_l[il] > sorted_r[ir])) {
+            sorted[i] = sorted_r[ir++];
+        } else if (il < size_l) {
+            sorted[i] = sorted_l[il++];
+        }
+    }
+    free(sorted_l);
+    free(sorted_r);
+    return sorted;
+}
+
+#define AL 10
+int array[AL] = { 'y','z','x','n','k','m','d','a','b','c' };
+/* int array[AL] = { 9,8,6,7,4,5,2,3,1,0 }; */
+/* int array[AL] = { 0,1,2,3,4,5,6,7,8,9 }; */
+
+for (int i = 0; i < AL; i++) {
+    printf("%c-", array[i]);
+} printf("\n");
+
+int *sorted = merge_sort(array, 0, AL);
+
+for (int i = 0; i < AL; i++) {
+    printf("%c-", sorted[i]);
+}
+#+end_src
+
+#+RESULTS:
+| y-z-x-n-k-m-d-a-b-c- |
+| a-b-c-d-k-m-n-x-y-z- |
+
 ** 4.6 Quicksort
 
 ** 4.7 Distribution Sort: Bucketing
