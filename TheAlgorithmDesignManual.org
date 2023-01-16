@@ -642,15 +642,55 @@ because apparently in real world benchmarks, it outperforms it 2-3x. This is
 likely due to the extra space requirements of mergesort. In particular if you
 have to allocate memory on the heap
 
-#+begin_src C :includes stdio.h stdlib.h
-void quicksort(int *array, int len) {
-    int pivot = pivot();
-    int *left = quicksort(array, len / 2);
-    int *right =quicksort(array, len / 2);
+#+begin_src C :includes stdio.h stdlib.h time.h
+void swap(int *i, int *j) {
+    int temp = *i;
+    ,*i = *j;
+    ,*j = temp;
+}
+
+void quicksort(int *array, int start, int end) {
+    int len = end - start + 1;
+    if (len <= 1) {
+        return;
+    }
+    int r = (int)((float)rand() / RAND_MAX * len);
+    int pivot = array[start + r];
+    int mid = start;
+    int s = mid;
+    int h = end;
+    while (mid <= h) {
+        if (array[mid] < pivot) {
+            swap(&array[mid++], &array[s++]);
+        } else if (array[mid] > pivot) {
+            swap(&array[mid], &array[h--]);
+        } else {
+            mid++;
+        }
+    }
+    quicksort(array, start, s-1);
+    quicksort(array, s+1, end);
+    return;
+}
+
+#define LEN 10
+int array[LEN] = {5,4,3,2,3,2,1,1,8,6};
+for (int i = 0; i < LEN; i++) {
+    printf("%i", array[i]);
+} printf("\n");
+
+quicksort(array, 0, LEN - 1);
+
+for (int i = 0; i < LEN; i++) {
+    printf("%i", array[i]);
 }
 #+end_src
 
 
+Usually in higher level languages like Python and Haskell, you would allocate
+new arrays to hold the new sorted elements. However, it becomes more challenging
+when doing it in place. This algorithm requires 3 pointers to keep track of the
+mid point, the iterator, and the high, then finish once mid passes h. 
 ** 4.7 Distribution Sort: Bucketing
 
 Two other sorting algorithms function similarly by subdividing the sorting
