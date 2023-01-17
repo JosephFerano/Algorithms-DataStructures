@@ -408,6 +408,7 @@ in this case either a heap or a balanced binary tree. The first initial construc
 one O(n), but subsequent operations within the loop will now take O(log n) rather than O(n), giving
 a final complexity of O(n log n).
 
+
 *** Heaps
 
 They can either be min or max heaps and the root node will dominate its children in min-ness or
@@ -710,6 +711,7 @@ Usually in higher level languages like Python and Haskell, you would allocate
 new arrays to hold the new sorted elements. However, it becomes more challenging
 when doing it in place. This algorithm requires 3 pointers to keep track of the
 mid point, the iterator, and the high, then finish once mid passes h. 
+
 ** 4.7 Distribution Sort: Bucketing
 
 Two other sorting algorithms function similarly by subdividing the sorting
@@ -744,4 +746,7 @@ relations.
 
 It is an equation that is defined in terms of itself, so I guess recursive.
 Fibonacci is a good example F_{n} = F_{n-1} + F_{n-2}...
+
+* Chapter 5
+
 
