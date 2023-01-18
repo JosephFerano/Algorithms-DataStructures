@@ -749,4 +749,41 @@ Fibonacci is a good example F_{n} = F_{n-1} + F_{n-2}...
 
 * Chapter 5
 
+** 5.1 Graphs
+
+Graphs are G = (E,V), so a set of edges and a set of vertices. Many real world
+systems can be modeled as graphs, such as road/city networks. Many algorithmic
+problems become much simpler when modeled with graphs. There are several flavors
+of graphs;
+
+- Directed vs Undirected
+- Weighted vs Unweighted
+- Simple vs Non-simple
+- Spares vs Dense
+- Cyclic vs Acyclic
+- Embedded vs Topological
+- Implicted vs Explicit
+- Labeled vs Unlabeled
+
+Social networks provide an interesting way to analyze each one of these
+considerations.
+
+** 5.2 Data Structures for Graphs
+
+Which data structure we use will impact the time and space complexity of certain
+operations.
+
+- Adjecency Matrix
+  You can use an /n/ x /m/ matrix, where each /(i,j)/ index answers whether an edge
+  exists. However, with sparse graphs, there might be a lot of wasted space.
+
+- Adjencency Lists
+  Use linked lists instead, however it is harder to verify if a certain edge
+  exists. This can be mitigated by collecting them in a BFS of DFS.
+
+#+begin_src C :includes stdio.h stdlib.h
+//TODO Copy graph implementation
+#+end_src
+
+** 5.3 War Story
 
