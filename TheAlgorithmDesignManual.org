@@ -215,6 +215,7 @@ no real impact on the growth rate; log_{2} and log_{3} are roughly equivalent.
 
 Cool story bro
 
+
 ** 2.9 Advanced Analysis
 
 Some advanced stuff
@@ -224,7 +225,7 @@ Some advanced stuff
   Binary search on a sorted array of only log n items
 - *log n / log log n*
 - log^{2} n
-- \sqrt{,}n
+- sqrt(n)
 
 There are also limits and dominance relations
 
@@ -254,6 +255,73 @@ However, pointers require extra space for storing pointer fields
 
 *** Queues
 (/ENQUEUE/, /DEQUEUE/) FIFO, useful for breadth-first searches in graphs.
+
+#+name: queue
+#+begin_src C :includes stdio.h stdlib.h
+#define QBUFSIZE 64
+#define T int
+
+struct queue {
+    T buf[QBUFSIZE];
+    int start;
+    int end;
+    int size;
+};
+
+struct queue *q_create() {
+    struct queue *q = calloc(1, sizeof(struct queue));
+    q->start = 0;
+    q->end = 0;
+}
+
+void q_enqueue(struct queue *q, T item) {
+    if (q->size == QBUFSIZE) {
+        printf("Queue Overflow");
+        exit(1);
+    }
+    q->buf[q->end] = item;
+    q->end = ++q->end % QBUFSIZE;
+    q->size++;
+}
+
+T q_dequeue(struct queue *q) {
+    if (q->size == 0) {
+        printf("Queue empty");
+        exit(1);
+    }
+    T item = q->buf[q->start++];
+    q->size--;
+    return item;
+}
+
+T q_peek(struct queue *q) {
+    if (q->size == 0) {
+        printf("Queue empty");
+        exit(1);
+    }
+    return q->buf[q->start];
+}
+
+void q_print(struct queue *q) {
+    printf("Qeueu_Elements: ");
+    for (int i = 0; i < q->size; i++) {
+        printf("%i-", q->buf[(i + q->start) % QBUFSIZE]);
+    }
+    printf("\n");
+}
+
+// struct queue *q = q_create();
+// q_enqueue(q, 1);
+// q_enqueue(q, 2);
+// q_enqueue(q, 3);
+// q_enqueue(q, 4);
+// q_dequeue(q);
+// q_dequeue(q);
+// q_enqueue(q, 5);
+// q_enqueue(q, 6);
+// q_print(q);
+#+end_src
+
 
 ** 3.3 Dictionaries
 
@@ -567,7 +635,7 @@ print_pq(pq);
 
 ** 4.4 War Story
 
-Apparently calculating airline tickets is hard
+Apparently calculating the price of airline tickets is hard.
 
 ** 4.5 Mergesort
 
@@ -791,8 +859,8 @@ struct edgenode {
 };
 
 struct graph {
-    struct edgenode *edges[MAXV+1];
-    int degree[MAXV+1];
+    struct edgenode *edges[MAXV];
+    int degree[MAXV];
     int nvertices;
     int nedges;
     bool directed;
@@ -802,15 +870,15 @@ void initialize_graph(struct graph *g, bool directed) {
     g->nvertices = 0;
     g->nedges = 0;
     g->directed = directed;
-    for (int i = 1; i <= MAXV; i++) g->degree[i] = 0;
-    for (int i = 1; i <= MAXV; i++) g->edges[i] = NULL;
+    for (int i = 0; i < MAXV; i++) g->degree[i] = 0;
+    for (int i = 0; i < MAXV; i++) g->edges[i] = NULL;
 }
 
 // TODO: We have to read whether the graph is directed or not and
 // insert edges twice
 void insert_edge(struct graph *g, int x, int y) {
     struct edgenode *p;
-    p  = malloc(sizeof(struct edgenode));
+    p = malloc(sizeof(struct edgenode));
     p->weight = 0;
     p->y = y;
     p->next = g->edges[x];
@@ -818,17 +886,15 @@ void insert_edge(struct graph *g, int x, int y) {
     g->edges[x] = p;
     g->degree[x]++;
 
-    if (g->directed == false) {
-        insert_edge(g, y, x);
-    }
+    g->nedges++;
 }
 
 void print_graph(struct graph *g) {
     int i;
     struct edgenode *p;
 
-    for (i = 0; i <= g->nvertices; i++) {
-        printf("V%d", i);
+    for (i = 0; i < g->nvertices; i++) {
+        printf("V%d", i+1);
         p = g->edges[i];
         while (p != NULL) {
             printf("->%d", p->y);
@@ -840,11 +906,38 @@ void print_graph(struct graph *g) {
 
 struct graph *g = malloc(sizeof(struct graph));
 initialize_graph(g, true);
+g->nvertices = 3;
+insert_edge(g, 0, 1);
+insert_edge(g, 0, 2);
+insert_edge(g, 0, 3);
+insert_edge(g, 1, 1);
+insert_edge(g, 1, 3);
+insert_edge(g, 2, 1);
+
 print_graph(g);
 #+end_src
 
-#+RESULTS:
-: V0
 
 ** 5.3 War Story
+
+Apparently, computers were really slow before. That and it's better to keep
+asymptotics in mind even if it's about the same.
+
+** 5.4 War Story
+
+Apparently loading data itself can be really slow.
+
+** 5.5 Traversing a Graph
+
+When traversing a graph, it's useful to keep track of the state of each vertex,
+whether the vertex has been /undiscovered/, /discovered/, or /processed/.
+
+** 5.6 Breadth-First Search (BFS)
+
+#+begin_src C :includes stdio.h stdlib.h :noweb yes
+<<queue>>
+struct queue *q2 = q_create();
+#+end_src
+
+#+RESULTS:
 
