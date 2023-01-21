@@ -302,6 +302,10 @@ T q_peek(struct queue *q) {
     return q->buf[q->start];
 }
 
+bool q_empty(struct queue *q) {
+    return q->size <= 0;
+}
+
 void q_print(struct queue *q) {
     printf("Qeueu_Elements: ");
     for (int i = 0; i < q->size; i++) {
@@ -487,19 +491,21 @@ because the nodes aren't guaranteed to be ordered, only the relationship between
 Here's the full heap implementation;
 
 #+begin_src C :includes stdio.h stdlib.h
-#define PQ_SIZE 256
 #define item_type int
 
 struct priority_queue {
+    // TODO: Why did I make this a pointer?
     item_type *q;
     int len;
+    int capacity;
 };
 
-struct priority_queue *pq_create() {
-    item_type *q = calloc(PQ_SIZE, sizeof(item_type));
+struct priority_queue *pq_create(int capacity) {
+    item_type *q = calloc(capacity, sizeof(item_type));
     struct priority_queue *pq = malloc(sizeof(struct priority_queue));
     pq->q = q;
     pq->len = 0;
+    pq->capacity = capacity;
 }
 
 int pq_parent(int n) {
@@ -556,7 +562,7 @@ void pq_bubble_down(struct priority_queue *pq, int n) {
 }
 
 void pq_insert(struct priority_queue *pq, item_type x) {
-    if (pq->len >= PQ_SIZE) {
+    if (pq->len >= pq->capacity) {
         printf("Error: Priority Queue Overflow");
         return;
     }
@@ -849,6 +855,7 @@ operations.
   Use linked lists instead, however it is harder to verify if a certain edge
   exists. This can be mitigated by collecting them in a BFS of DFS.
 
+#+name: graph
 #+begin_src C :includes stdio.h stdlib.h stdbool.h
 #define MAXV 1000
 
@@ -934,11 +941,131 @@ whether the vertex has been /undiscovered/, /discovered/, or /processed/.
 
 ** 5.6 Breadth-First Search (BFS)
 
+This is a C implementation of BFS, however at the moment it doesn't really do
+much. The important thing here is that a BFS uses a queue to visit every node in
+the graph.
 
-#+begin_src C :includes stdio.h stdlib.h :noweb yes
+#+begin_src C :includes stdio.h stdlib.h stdbool.h :noweb yes
 <<queue>>
-struct queue *q2 = q_create();
+<<graph>>
+
+bool processed[QBUFSIZE];
+bool discovered[QBUFSIZE];
+int parent[QBUFSIZE];
+
+void initialize_search(struct graph *g) {
+    for (int i = 0; i < g->nvertices; i++) {
+        processed[i] = discovered[i] = false;
+        parent[i] = -1;
+    }
+}
+
+void process_edge(T vertex, T edge) {}
+
+void bfs(struct graph *g, int start) {
+    struct queue *q = q_create();
+    initialize_search(g);
+    q_enqueue(q, start);
+    discovered[start] = true;
+
+    while (!q_empty(q)) {
+        T v = q_dequeue(q);
+        processed[v] = true;
+        struct edgenode *p = g->edges[v];
+        while (p != NULL) {
+            T y = p->y;
+            if ((processed[y] == false) || g->directed) {
+                process_edge(v, y);
+            }
+            if (discovered[y] == false) {
+                q_enqueue(q, y);
+                discovered[y] = true;
+                parent[y] = v;
+            }
+            p = p->next;
+        }
+    }
+    
+    free(q);
+}
 #+end_src
 
-#+RESULTS:
+** 5.7 Applications of BFS
+
+The one project we worked on, the "Six Degrees of Bacon", which is just a six
+degrees of separation problem. However, one interesting point to the "six
+degrees of separation" between all humans is that it assumes that all human
+social networks are "connected", meaning that there may be vertices on the graph
+that are not connected to the others and form their own little cluster. BFS
+works well for this, since it's basically a shortest path problem.
+
+Other applications include solving a Rubiks cube so in theory you should now
+know enough to be able to create a solver, because each legal move up until the
+solved move should be connected on the graph.
+
+The vertex-coloring problem assigns each vertex a label or color such that no
+edge links any two vertices of the same label/color, ideally using as few colors
+as possible. A graph is /bipartite/ if it can be colored without conflicts with
+just two colors. 
+
+** 5.8 Depth-first Search (DFS)
+
+While BFS uses a queue, DFS uses a stack, but since recursion models a stack
+already, we don't need an extra data structure. Here is the C implementation
+mostly just copied from the book.
+
+#+begin_src C :includes stdio.h stdlib.h stdbool.h :noweb yes
+<<graph>>
+void dfs(struct graph *g, int v) {
+    edgenode *p;
+    int y;
+
+    // No idea where this symbol comes from
+    // They seem to be global
+    if (finished) return;
+
+    discovered[v] = true;
+    // And these two as well
+    entry_time[v] = ++time;
+    p = g->edges[v];
+    while (p != NULL) {
+        y = p->y;
+        if (discovered[y] == false) {
+            parent[y] == v;
+            process_edge(v, y);
+            dfs(g, y);
+        } else if (!processed[y] || g->directed) {
+            process_edge(v, y);
+            if (finished) return;
+            p = p->next;
+        }
+
+        time = time + 1;
+        exit_time[v] = time;
+        processed[v] = true;
+    }
+}
+#+end_src
+
+This uses a technique called Backtracking which still hasn't been explored, but
+the idea is that it goes further down until it cannot process anything further,
+then goes all the way back up to where it can start branching out again.
+
+** 5.9 Applications of DFS
+
+DFS is useful for finding articulation vertices, which are basically weak points
+where removal will cause other vertices to become disconnected. It's also useful
+for finding cycles.
+
+** 5.10 DFS on Directed Graphs
+
+The important operation here is topological sorting which is useful with
+Directed Acyclic Graphs (DAGs). We can also check if a DAG is strongly
+connected, meaning that we won't run into any dead ends since we cannot
+backtrack. However, these graphs can be partitioned.
+
+* Chapter 6
+
+** 6.1 Minimum Spanning Trees
+
 
