@@ -1068,4 +1068,27 @@ backtrack. However, these graphs can be partitioned.
 
 ** 6.1 Minimum Spanning Trees
 
+Weighted graphs open up a whole new universe of algorithms which tend to be a
+bit more helpful in modeling real world stuff like roads. A minimum spanning
+tree would have all vertices connected but uses the smallest weights for all its
+edges.
+
+Prim's Algorithm can be used to construct a spanning tree but because it is a
+greedy algorithm.  Kruskal's algorithm is a more efficient way to find MSTs with
+the use of a /union-find/. This data structure is a /set partition/, which finds
+disjointed subsets. These can also be used to solve other interesting problems;
+
+- Maximum Spanning Trees
+- Minimum Product Spanning Trees
+- Minimum Bottleneck Spanning Tree
+
+However, Steiner Tree and Low-degree Spanning Tree apparently cannot be solved
+with the previous two algorithms.
+
+** 6.2 War Story
+
+Minimum Spanning Trees and its corresponding algorithms can help solve Traveling
+Salesman Problems
+
+** 6.3 Shortest Paths
 
