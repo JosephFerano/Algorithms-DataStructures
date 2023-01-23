@@ -126,6 +126,52 @@ Apparently you can do arithmetic on the Big Oh functions
 ** 2.5 Efficiency
 
 *** Selection Sort
+
+**** OCaml
+
+Really reinventing the wheel on this one...
+
+#+begin_src ocaml
+let max_element = function
+  | [] -> invalid_arg "empty list"
+  | x::xs ->
+     let rec f acc = function
+       | [] -> acc
+       | x::xs -> f (if x > acc then x else acc) xs
+     in f x xs
+
+let remove item list = 
+  let rec f acc item = function
+    | [] -> List.rev acc
+    | x::xs -> if item = x then (List.rev acc) @ xs else f (x::acc) item xs
+  in f [] item list
+
+let selection_sort list =
+  let rec f acc = function
+    | [] -> acc
+    | xs ->
+       let m = max xs
+       in f (m::acc) (remove m xs)
+  in f [] list
+#+end_src
+
+**** Python
+
+#+begin_src python
+def selection_sort(arr):
+    sorted_list = []
+    for i in range(len(arr)):
+        max = arr[0]
+        for count, value in enumerate(arr):
+            if value > max:
+                max = value
+        sorted_list.append(max)
+        arr.remove(max)
+    return sorted_list
+
+selection_sort([2,1,5,3,4])
+#+end_src
+
 **** C
 
 #+begin_src C :includes stdio.h
@@ -156,17 +202,6 @@ void selection_sort(int *nums, int length) {
 int nums[9] = { 2, 4, 9, 1, 3, 8, 5, 7, 6 };
 selection_sort(nums, 9);
 #+end_src
-
-#+RESULTS:
-| 2 | 4 | 9 | 1 | 3 | 8 | 5 | 7 | 6 |   |
-| 1 | 4 | 9 | 2 | 3 | 8 | 5 | 7 | 6 |   |
-| 1 | 2 | 9 | 4 | 3 | 8 | 5 | 7 | 6 |   |
-| 1 | 2 | 3 | 4 | 9 | 8 | 5 | 7 | 6 |   |
-| 1 | 2 | 3 | 4 | 9 | 8 | 5 | 7 | 6 |   |
-| 1 | 2 | 3 | 4 | 5 | 8 | 9 | 7 | 6 |   |
-| 1 | 2 | 3 | 4 | 5 | 6 | 9 | 7 | 8 |   |
-| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 9 | 8 |   |
-| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 |   |
 
 
 *** Insertion Sort
@@ -252,6 +287,71 @@ However, pointers require extra space for storing pointer fields
 
 *** Stacks
 /(PUSH, /POP/) LIFO, useful in executing recursive algorithms.
+
+#+begin_src C :includes stdlib.h stdio.h stdbool.h
+typedef struct Node {
+    struct Node* next;
+    /* void *data; */
+    int data;
+} Node;
+
+typedef struct Stack {
+    Node* top;
+    int length;
+} Stack;
+
+/* void stack_create(void* data) { */
+Stack *stack_create(int data) {
+    Stack *stack = malloc(sizeof(Stack));
+    Node *node = malloc(sizeof(Node));
+    node->data = data;
+    node->next = NULL;
+    stack->top = node;
+    stack->length = 1;
+    return stack;
+}
+
+int stack_pop(Stack *stack) {
+    Node *top = stack->top;
+    Node *next = top->next;
+    if (stack->length > 0 && next != NULL) {
+        stack->top = next;
+        stack->length--;
+        int value = top->data;
+        free(top);
+        return value;
+    } else {
+        // A better API design would be to return a bool and the int as a pointer
+        // Although once we switch away from int and use void pointers, might not be needed
+        return -1;
+    }
+}
+
+/* void stack_push(Stack *stack, void *data) { */
+void stack_push(Stack *stack, int data) {
+    Node *node = malloc(sizeof(Node));
+    Node *top = stack->top;
+    node->data = data;
+    node->next = top;
+    stack->top = node;
+    stack->length++;
+}
+
+/* void* stack_peak(Stack *stack) { */
+int stack_peak(Stack *stack) {
+    return stack->top->data;
+}
+
+void stack_print(Stack *stack) {
+    Node *current = stack->top;
+    int i = 0;
+    while (current != NULL) {
+        printf("Stack at %d: %d\n", ++i, current->data);
+        current = current->next;
+    }
+    printf("------------------\n");
+}
+#+end_src
 
 *** Queues
 (/ENQUEUE/, /DEQUEUE/) FIFO, useful for breadth-first searches in graphs.
@@ -786,6 +886,29 @@ new arrays to hold the new sorted elements. However, it becomes more challenging
 when doing it in place. This algorithm requires 3 pointers to keep track of the
 mid point, the iterator, and the high, then finish once mid passes h. 
 
+*** Python
+
+#+begin_src python
+import random
+
+def quicksort(arr):
+    if len(arr) < 2:
+        return arr
+    elif len(arr) == 2:
+        if arr[0] > arr[1]:
+            temp = arr[1]
+            arr[1] = arr[0]
+            arr[0] = temp
+        return arr
+    else:
+        # Pick a random pivot
+        index = random.randrange(0, len(arr))
+        pivot = arr.pop(index)
+        left = [x for x in arr if x <= pivot]
+        right = [x for x in arr if x > pivot]
+        return quicksort(left) + [pivot] + quicksort(right)
+#+end_src
+
 ** 4.7 Distribution Sort: Bucketing
 
 Two other sorting algorithms function similarly by subdividing the sorting
@@ -808,6 +931,21 @@ contiguous sequence. There's also a one-sided binary search in case you're
 dealing with lazy sequences, where you search first by A[1], then A[2], A[4],
 A[8], A[16], and so forth. You can also use these sorts of bisections on square
 root problems, whatever those are.
+
+Here's a simple binary search guessing game;
+
+#+begin_src ocaml
+let binary_search items target =
+  let rec f low high =
+    match (high - low) / 2 + low with
+    | mid when target = items.(mid) -> Some items.(mid)
+    | mid when target < items.(mid) -> f low mid
+    | mid when target > items.(mid) -> f mid high
+    | _ -> None
+  in f 0 (Array.length items);;
+
+binary_search [|1;2;3;4;5|] 3;;
+#+end_src
 
 ** 4.10 Divide-and-Conquer
 
