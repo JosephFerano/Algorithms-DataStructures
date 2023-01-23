@@ -1092,3 +1092,25 @@ Salesman Problems
 
 ** 6.3 Shortest Paths
 
+In an unweighted graph, BFS will find the shortest path between two nodes. For
+weighted graphs the shortest path might have many more edges. Dijstra's
+algorithm can help us find the shortest path in a weighted path. It runs in
+O(n^{2}) time. One caveat is that it does not work with negative weighted edges.
+
+#+begin_src C :includes stdio.h stdlib.h
+
+#+end_src
+
+Another problem in this space is the all-pairs shortest path, and for this we
+would use the O(n^{3}) Floyd-Warshall algorithm which uses an adjacency matrix
+instead since we needed to construct one anyway to track all the possible pairs. 
+It's a useful algorithm for figuring out /transitive closure/ which is a fancy way
+of asking if some vertices are reachable from a node.
+
+** 6.4 War Story
+
+Kids are probably young to know what the author is even talking about with these
+phone codes.
+
+** 6.5 Network Flows and Bipartite Matching
+
