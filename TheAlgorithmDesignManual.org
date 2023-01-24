@@ -3,7 +3,7 @@
 #+STARTUP: overview
 #+OPTIONS: ^:{}
 
-* Chapter 1
+* Chapter 1 - Introduction
 
 ** 1.1 Robots
 
@@ -70,7 +70,7 @@ structures. These fundamental structures include;
 ** 1.5-1.6 War Story about Psychics
 
 
-* Chapter 2
+* Chapter 2 - Algorithm Analyses
 
 ** 2.1 RAM Model of Computation
 
@@ -264,7 +264,7 @@ Some advanced stuff
 
 There are also limits and dominance relations
 
-* Chapter 3
+* Chapter 3 - Data Structures
 
 ** 3.1 Contiguous vs Linked Data Structures
 
@@ -531,7 +531,7 @@ printf("Final: %s\n", str);
 | After:  | sirhC | si   | eman | yM    |
 | Final:  | Chris | is   | name | My    |
 
-* Chapter 4
+* Chapter 4 - Sorting and Searching
 
 ** 4.1 Applications of Sorting
 
@@ -959,7 +959,7 @@ relations.
 It is an equation that is defined in terms of itself, so I guess recursive.
 Fibonacci is a good example F_{n} = F_{n-1} + F_{n-2}...
 
-* Chapter 5
+* Chapter 5 - Graph Traversal
 
 ** 5.1 Graphs
 
@@ -1202,7 +1202,7 @@ Directed Acyclic Graphs (DAGs). We can also check if a DAG is strongly
 connected, meaning that we won't run into any dead ends since we cannot
 backtrack. However, these graphs can be partitioned.
 
-* Chapter 6
+* Chapter 6 - Weighted Graph Algorithms
 
 ** 6.1 Minimum Spanning Trees
 
@@ -1235,15 +1235,17 @@ weighted graphs the shortest path might have many more edges. Dijstra's
 algorithm can help us find the shortest path in a weighted path. It runs in
 O(n^{2}) time. One caveat is that it does not work with negative weighted edges.
 
-#+begin_src C :includes stdio.h stdlib.h
-
-#+end_src
-
 Another problem in this space is the all-pairs shortest path, and for this we
 would use the O(n^{3}) Floyd-Warshall algorithm which uses an adjacency matrix
 instead since we needed to construct one anyway to track all the possible pairs. 
 It's a useful algorithm for figuring out /transitive closure/ which is a fancy way
 of asking if some vertices are reachable from a node.
+
+*** TODO Dijstra's
+#+begin_src C :includes stdio.h stdlib.h
+
+#+end_src
+
 
 ** 6.4 War Story
 
@@ -1251,4 +1253,23 @@ Kids are probably young to know what the author is even talking about with these
 phone codes.
 
 ** 6.5 Network Flows and Bipartite Matching
+
+Bipartite matching is where no two edges share a vertex. There are also residual
+flow graphs which are useful for network bandwidth optimization. Flow algorithms
+generally solve problems related to edge and vertex connectivity. Edmonds and
+Karp runs at O(n^{3}).
+
+*** TODO Network Flow
+
+** 6.6 Design Graphs, Not Algorithms
+
+Modeling problems as graphs is useful for a variety of applications; pathfinding
+in games, DNA sequencing, smallest set of non-overlapping rectangles in a plain,
+filename shortening, line segmentation for optical character-recognition, and
+the list goes on.
+
+* Chapter 7 - Combinatorial Search and Heuristic Methods
+
+** 7.1 Backtracking
+
 
